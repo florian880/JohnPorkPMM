@@ -14,6 +14,12 @@ dahingehend, dass CSV eingelesen und im Excel-Format ausgegeben wird.
 | `csv_to_excel.R` | Skript: CSV einlesen → Kennzahlen → Excel schreiben → Kontrolle |
 | `betriebsdaten.xlsx` | Ergebnis (entsteht beim Ausführen des Skripts) |
 
+## Interpretation der Aufgabe
+
+Laut Angabe wird eine **CSV eingelesen** und im **Excel-Format ausgegeben** → Ablauf **CSV → R → Excel**.
+Zusätzlich wird die erzeugte Excel-Datei zur Kontrolle wieder in R eingelesen (`read_excel()`),
+d. h. das Skript deckt auch den Weg **Excel → R** ab (Gesamtablauf: CSV → R → Excel → R).
+
 ## Recherche: Wie schreibt man in R eine Excel-Datei?
 
 | Paket | Schreiben | Vorteile | Nachteile |
