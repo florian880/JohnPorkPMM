@@ -1,10 +1,12 @@
 # Hausaufgabe UE 1 — Daten visualisieren
 
-Name: Florian Benesch &nbsp;&nbsp;&nbsp; Abgabe: _____________
+Name: Florian Benes &nbsp;&nbsp;&nbsp; Abgabe: _____________
 
 **Lektüre:** R4DS 2e, [Kap. 1 Data visualization](https://r4ds.hadley.nz/data-visualize.html)
 und [Kap. 2 Workflow: basics](https://r4ds.hadley.nz/workflow-basics.html) —
 lies sie zuerst, die Aufgaben bauen darauf auf.
+
+**Skript:** Der gesamte Code dieser Hausaufgabe steht in [`sa01_ggplot.R`](sa01_ggplot.R) (läuft von oben nach unten durch, Source-Button).
 
 ---
 
@@ -35,7 +37,7 @@ ggplot(penguins,
   geom_point() +
   labs(x = "Flossengröße (mm)", y = "Körpermasse (g)")
 ```
-![alt text](image.png)
+![Zielplot: Flossengröße vs. Körpermasse nach Art](Screenshot%202026-10-12%20140219.png)
 - Steigt die Körpermasse mit der Flossengröße für **alle drei Arten**? Körpermasse steigt mit Flossengröße
 - Welche Art ist am schwersten? Gentoo
 
@@ -53,7 +55,7 @@ ggplot(penguins, aes(x = species, y = body_mass_g, color = species)) + geom_poin
 Vorhersage: erste Zeile alles rot(colour=rot), zweite nach species eingefärbt(color=species)
 
 <br>R-Ergebnis (ausführen und vergleichen): Alle Punkte sind rot.  
-![alt text](image-1.png)
+![Alle Punkte rot (color = "red" in geom_point)](Screenshot%202026-10-13%20001856.png)
 
 **b)** Was passiert, wenn du das `+` an den Zeilenanfang stellst?
 
@@ -75,8 +77,7 @@ Streudiagramm mit sinnvollen `labs()`-Achsentiteln. Ergänze `geom_smooth()`.
 
 - Deine Frage (in einem Satz): Hängt die Schnabellänge der Pinguine mit ihrer Körpermasse zusammen?
 - Was zeigt der Plot? (2 Sätze): Pinguine mit längerem Schnabel sind im Durchschnitt schwerer. Der Trend ist klar steigend, auch wenn die Punkte etwas streuen.
-![alt text](image-2.png)
-  _________________________________________________
+![Schnabellänge vs. Körpermasse mit geom_smooth](Screenshot%202026-10-13%20003341.png)
 
 ---
 

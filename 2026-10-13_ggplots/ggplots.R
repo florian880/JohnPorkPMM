@@ -1,0 +1,72 @@
+# =============================================================
+# 2026-10-13 ggplots – Demo nachbauen und sinnvoll ergänzen
+# Florian Benes, 4AHWIT (x), Prozessmanagement
+# =============================================================
+
+library(ggplot2)
+library(palmerpenguins)   # penguins mit body_mass_g, year usw.
+
+# -------------------------------------------------------------
+# 1. Demo aus der Stunde (nachgebaut)
+# -------------------------------------------------------------
+p_demo <- ggplot(penguins,
+                 aes(x = year, y = body_mass_g)) +
+  geom_smooth() +
+  labs(x = "Geburtsjahr (J)", y = "Körpermasse (g)")
+p_demo
+
+# -------------------------------------------------------------
+# 2. Ergänzung: Rohdaten sichtbar machen
+#    Nur die Glättungslinie verschleiert, wie stark die Werte streuen.
+#    year hat nur 3 Werte (2007, 2008, 2009) -> geom_jitter verteilt
+#    die Punkte leicht, damit sie sich nicht überdecken.
+# -------------------------------------------------------------
+p_punkte <- ggplot(penguins,
+                   aes(x = year, y = body_mass_g)) +
+  geom_jitter(width = 0.15, alpha = 0.4) +
+  geom_smooth() +
+  scale_x_continuous(breaks = c(2007, 2008, 2009)) +
+  labs(x = "Geburtsjahr (J)", y = "Körpermasse (g)",
+       title = "Körpermasse nach Jahr – mit Einzelwerten")
+p_punkte
+
+# -------------------------------------------------------------
+# 3. Ergänzung: nach Art getrennt (color = species)
+#    Die Arten sind sehr unterschiedlich schwer (Gentoo ~5 kg) –
+#    eine gemeinsame Linie mischt das zusammen.
+#    method = "lm": gerade Trendlinie, passt bei nur 3 x-Werten besser
+# -------------------------------------------------------------
+p_arten <- ggplot(penguins,
+                  aes(x = year, y = body_mass_g, color = species)) +
+  geom_jitter(width = 0.15, alpha = 0.4) +
+  geom_smooth(method = "lm", se = TRUE) +
+  scale_x_continuous(breaks = c(2007, 2008, 2009)) +
+  labs(x = "Geburtsjahr (J)", y = "Körpermasse (g)", color = "Art",
+       title = "Körpermasse nach Jahr und Art")
+p_arten
+
+# -------------------------------------------------------------
+# 4. Ergänzung: Boxplot je Jahr und Art (facet_wrap)
+# -------------------------------------------------------------
+p_box <- ggplot(penguins,
+                aes(x = factor(year), y = body_mass_g, fill = species)) +
+  geom_boxplot() +
+  facet_wrap(~ species) +
+  labs(x = "Geburtsjahr (J)", y = "Körpermasse (g)", fill = "Art",
+       title = "Verteilung der Körpermasse je Jahr und Art")
+p_box
+
+# Plots speichern (Beleg im Repo)
+ggsave("demo_year_bodymass.png",  p_demo,   width = 7, height = 5)
+ggsave("ergaenzung_punkte.png",   p_punkte, width = 7, height = 5)
+ggsave("ergaenzung_arten.png",    p_arten,  width = 7, height = 5)
+ggsave("ergaenzung_boxplot.png",  p_box,    width = 9, height = 5)
+
+# -------------------------------------------------------------
+# Interpretation
+# -------------------------------------------------------------
+# Über die drei Jahre 2007–2009 bleibt die Körpermasse ziemlich konstant –
+# es gibt keinen klaren Trend. Die Unterschiede zwischen den Arten
+# (Gentoo deutlich schwerer) sind viel größer als die Unterschiede
+# zwischen den Jahren. Mit nur 3 Jahren kann man ohnehin keinen
+# langfristigen Trend ableiten.
