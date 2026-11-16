@@ -32,6 +32,7 @@ Zum Kontrollieren wird die Datei mit `readxl::read_excel()` wieder eingelesen.
 2. Mit `group_by()` + `summarise()` Kennzahlen pro Maschine und pro Maschine/Charge (Mittelwert, Standardabweichung, Min, Max) – `na.rm = TRUE`, damit die 4 fehlenden Werte nicht alles zu `NA` machen.
 3. `write_xlsx(list(Rohdaten = ..., Kennzahlen_Maschine = ..., Kennzahlen_Charge = ...), path = "betriebsdaten.xlsx")` – jeder Listeneintrag wird ein eigenes Tabellenblatt.
 4. Kontrolle: `excel_sheets()` zeigt die Blätter, `read_excel()` liest sie zurück, Zeilenzahl wird verglichen.
+5. `shell.exec()` öffnet die fertige `.xlsx` am Ende automatisch in Excel (nur Windows).
 
 ## Ausführen
 

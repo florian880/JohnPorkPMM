@@ -76,6 +76,13 @@ excel_sheets(excel_datei)              # "Rohdaten" "Kennzahlen_Maschine" "Kennz
 kontrolle <- read_excel(excel_datei, sheet = "Rohdaten")
 nrow(kontrolle) == nrow(betriebsdaten) # TRUE -> alle Zeilen drin
 
+# -------------------------------------------------------------
+# 5. Excel-Datei direkt in Excel öffnen (Windows)
+# -------------------------------------------------------------
+if (.Platform$OS.type == "windows") {
+  shell.exec(normalizePath(excel_datei))
+}
+
 # Alternative mit Formatierung (fette Kopfzeile, Spaltenbreiten):
 # install.packages("openxlsx")
 # openxlsx::write.xlsx(betriebsdaten, file.path(ordner, "betriebsdaten_formatiert.xlsx"),
