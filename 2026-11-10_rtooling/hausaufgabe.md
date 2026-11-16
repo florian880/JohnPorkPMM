@@ -13,6 +13,7 @@ dahingehend, dass CSV eingelesen und im Excel-Format ausgegeben wird.
 | `betriebsdaten.csv` | Messdaten: 3 Maschinen × 10 Chargen × 4 Messungen = 120 Zeilen, 4 fehlende Werte |
 | `csv_to_excel.R` | Skript: CSV einlesen → Kennzahlen → Excel schreiben → Kontrolle |
 | `betriebsdaten.xlsx` | Ergebnis (entsteht beim Ausführen des Skripts) |
+| `konsolenausgabe.txt` | Dokumentation: vollständige RStudio-Konsolenausgabe eines sauberen Durchlaufs |
 
 ## Interpretation der Aufgabe
 
