@@ -1,0 +1,176 @@
+
+> # =============================================================
+> # SA-00 „Was kann R?“ – Übungen von der Folie + Aufgabe
+> # Florian Benes, 4AHWIT (x), Prozessmanagement, 2026-10-06
+> # RStudio-Projekt pmm-sa-00 öffnen, dann Source (Ctrl+Shift+S)
+> # =============================================================
+> 
+> library(tidyverse)
+
+> library(palmerpenguins)
+
+> # -------------------------------------------------------------
+> # Folie: Erste Schritte im Skript
+> # -------------------------------------------------------------
+> 2 + 2                                  # [1] 4
+[1] 4
+
+> mittel <- mean(c(10.01, 9.98, 10.03))  # Zuweisung druckt nichts
+
+> mittel                                 # [1] 10.00667
+[1] 10.00667
+
+> # -------------------------------------------------------------
+> # Beispiel 1: Betriebsdaten von Null auf Vergleichstabelle
+> # -------------------------------------------------------------
+> 
+> # 1a. Einlesen und Erstblick
+> teile <- read_csv("daten/betriebsdaten.csv")
+indexing betriebsdaten.csv [=============================] 12.59MB/s, eta:  0s                                                                              
+> glimpse(teile)
+Rows: 120
+Columns: 3
+$ maschine <chr> "M1", "M1", "M1", "M1", "M2", "M2", "M2", "M2", "M3", "M3",…
+$ charge   <dbl> 101, 101, 101, 101, 101, 101, 101, 101, 101, 101, 101, 101,…
+$ masse_mm <dbl> 10.00, 10.02, 9.92, 10.03, 9.96, 9.92, 9.94, 9.97, 10.03, 1…
+
+> # 120 Zeilen, 3 Spalten
+> # masse_mm ist <dbl> (Kommazahl)
+> # maschine ist <chr>, weil die Werte "M1", "M2", "M3" Text sind (Buchstabe M),
+> # keine Zahlen.
+> 
+> # 1b. Vorhersage: 3 Zeilen (eine pro Maschine), Mittelwerte alle ca. 10 mm
+> teile |>
++   group_by(maschine) |>
++   summarise(n = sum(!is.na(masse_mm)),
++             mittel = mean(masse_mm, na.rm = TRUE))
+# A tibble: 3 × 3
+  maschine     n mittel
+  <chr>    <int>  <dbl>
+1 M1          37  10.0 
+2 M2          39   9.98
+3 M3          40  10.1 
+
+> # Ergebnis: M1 37 / 10.0 · M2 39 / 9.98 · M3 40 / 10.1 -> stimmt mit Kontrollwerten
+> # M1 hat n = 37 statt 40, weil bei M1 drei Messwerte fehlen (NA).
+> # sum(!is.na(...)) zählt nur tatsächlich gemessene Teile.
+> 
+> # 1c. Toleranz prüfen: Soll 10,00 mm ± 0,15 mm
+> sum(abs(teile$masse_mm - 10) > 0.15, na.rm = TRUE)
+[1] 6
+
+> # -> Anzahl gemessener Teile außerhalb der Toleranz
+> # Vorhersage ohne na.rm: Ergebnis ist NA, weil eine einzige fehlende
+> # Messung die ganze Summe zu NA macht (klassischer Fehler: fehlende Werte
+> # ohne na.rm).
+> sum(abs(teile$masse_mm - 10) > 0.15)   # -> NA
+[1] NA
+
+> # Welche Teile sind außerhalb?
+> teile |> filter(abs(masse_mm - 10) > 0.15)
+# A tibble: 6 × 3
+  maschine charge masse_mm
+  <chr>     <dbl>    <dbl>
+1 M3          103     10.2
+2 M3          106     10.2
+3 M3          106     10.2
+4 M3          107     10.2
+5 M3          108     10.2
+6 M3          110     10.2
+
+> # -------------------------------------------------------------
+> # Folie: Pinguine – Plot, Kennzahlen, NA-Fehler, t-Test
+> # -------------------------------------------------------------
+> ggplot(penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
++   geom_point()
+
+> # 342 Punkte: zwei Pinguine haben keine Massung (Warnung "Removed 2 rows")
+> 
+> penguins |>
++   group_by(species) |>
++   summarise(n = n(), mittel = round(mean(body_mass_g, na.rm = TRUE)))
+# A tibble: 3 × 3
+  species       n mittel
+  <fct>     <int>  <dbl>
+1 Adelie      152   3701
+2 Chinstrap    68   3733
+3 Gentoo      124   5076
+
+> # Adelie 152/3701 · Chinstrap 68/3733 · Gentoo 124/5076
+> 
+> mean(penguins$body_mass_g)              # NA -> fehlende Werte!
+[1] NA
+
+> mean(penguins$body_mass_g, na.rm = TRUE)
+[1] 4201.754
+
+> t.test(body_mass_g ~ sex, data = penguins)
+
+	Welch Two Sample t-test
+
+data:  body_mass_g by sex
+t = -8.5545, df = 323.9, p-value = 4.794e-16
+alternative hypothesis: true difference in means between group female and group male is not equal to 0
+95 percent confidence interval:
+ -840.5783 -526.2453
+sample estimates:
+mean in group female   mean in group male 
+            3862.273             4545.685 
+
+
+> # p-value = 4.794e-16 -> Unterschied Männchen/Weibchen kaum durch Zufall erklärbar
+> 
+> # -------------------------------------------------------------
+> # Beispiel 3: Transfer – Inseln statt Maschinen
+> # -------------------------------------------------------------
+> # 3a. Vorhersage: 3 Zeilen (Biscoe, Dream, Torgersen);
+> #     schwerste Insel vermutlich Biscoe
+> penguins |>
++   group_by(island) |>
++   summarise(n = n(), mittel = round(mean(body_mass_g, na.rm = TRUE)))
+# A tibble: 3 × 3
+  island        n mittel
+  <fct>     <int>  <dbl>
+1 Biscoe      168   4716
+2 Dream       124   3713
+3 Torgersen    52   3706
+
+> # 3b. Biscoe 168/4716 · Dream 124/3713 · Torgersen 52/3706 -> Vorhersage stimmt
+> 
+> # 3c. Warum ist Biscoe so schwer?
+> penguins |>
++   count(species, island)
+# A tibble: 5 × 3
+  species   island        n
+  <fct>     <fct>     <int>
+1 Adelie    Biscoe       44
+2 Adelie    Dream        56
+3 Adelie    Torgersen    52
+4 Chinstrap Dream        68
+5 Gentoo    Biscoe      124
+
+> # Die Gentoos (schwerste Art, ca. 5076 g) leben nur auf Biscoe.
+> # Deshalb zieht Biscoe den Inselmittelwert nach oben – es liegt an der Art,
+> # nicht an der Insel selbst.
+> # Nur auf einer Insel: Gentoo (Biscoe) und Chinstrap (Dream);
+> # Adelie lebt auf allen drei Inseln.
+> 
+> # 3d. t-Test nach Geschlecht
+> t.test(body_mass_g ~ sex, data = penguins)
+
+	Welch Two Sample t-test
+
+data:  body_mass_g by sex
+t = -8.5545, df = 323.9, p-value = 4.794e-16
+alternative hypothesis: true difference in means between group female and group male is not equal to 0
+95 percent confidence interval:
+ -840.5783 -526.2453
+sample estimates:
+mean in group female   mean in group male 
+            3862.273             4545.685 
+
+
+> # p-value = 4.794e-16
+> # Vermutung: Mit island (drei Gruppen) läuft t.test nicht – der t-Test
+> # vergleicht genau zwei Gruppen. Für drei Gruppen braucht man z. B. eine
+> # ANOVA (KM 7).
