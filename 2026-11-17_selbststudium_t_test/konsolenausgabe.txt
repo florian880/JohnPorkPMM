@@ -1,0 +1,186 @@
+
+> # =============================================================
+> # 2026-11-17 Selbststudium t-Test – Aufgabe KM7-01
+> # Mittelwertsvergleich: z-Test und t-Test
+> # Florian Benes, 4AHWIT (x), Prozessmanagement
+> # Projektordner = R-Projekt, Daten unter daten/betriebsdaten.csv
+> # =============================================================
+> 
+> library(tidyverse)
+
+> daten <- read_csv("daten/betriebsdaten.csv", show_col_types = FALSE)
+indexing betriebsdaten.csv [=============================] 18.18MB/s, eta:  0s                                                                              
+> glimpse(daten)   # 120 Zeilen, 3 Spalten, 4 Messungen fehlen
+Rows: 120
+Columns: 3
+$ maschine <chr> "M1", "M1", "M1", "M1", "M2", "M2", "M2", "M2", "M3", "M3",…
+$ charge   <dbl> 101, 101, 101, 101, 101, 101, 101, 101, 101, 101, 101, 101,…
+$ masse_mm <dbl> 10.00, 10.02, 9.92, 10.03, 9.96, 9.92, 9.94, 9.97, 10.03, 1…
+
+> # Kennzahlen je Maschine (na.rm = TRUE wegen der 4 fehlenden Werte)
+> kennzahlen <- daten |>
++   group_by(maschine) |>
++   summarise(
++     n           = sum(!is.na(masse_mm)),
++     mittel      = mean(masse_mm, na.rm = TRUE),
++     streuung    = sd(masse_mm, na.rm = TRUE),
++     abstand_soll = mittel - 10
++   )
+
+> kennzahlen
+# A tibble: 3 × 5
+  maschine     n mittel streuung abstand_soll
+  <chr>    <int>  <dbl>    <dbl>        <dbl>
+1 M1          37  10.0    0.0315     0.000541
+2 M2          39   9.98   0.0400    -0.0231  
+3 M3          40  10.1    0.0696     0.0627  
+
+> # -------------------------------------------------------------
+> # 1. Vorhersagen (vor dem Ausführen aufgeschrieben)
+> # -------------------------------------------------------------
+> # a) Vorhersage: M1 37, M2 39, M3 40 gültige Messungen
+> #    (120/3 = 40 je Maschine, minus 3 fehlende bei M1, minus 1 bei M2)
+> daten |> group_by(maschine) |>
++   summarise(n = sum(!is.na(masse_mm)))
+# A tibble: 3 × 2
+  maschine     n
+  <chr>    <int>
+1 M1          37
+2 M2          39
+3 M3          40
+
+> # -> stimmt: 37 / 39 / 40
+> 
+> # b) Vorhersage: M3 liegt am weitesten vom Sollmaß weg,
+> #    ca. 6 Hundertstel (10,063 - 10,000 = 0,063 mm) zu groß
+> #    -> siehe Spalte abstand_soll in kennzahlen
+> 
+> # c) M1 gegen M3 fällt leichter durch: Die Differenz (0,062 mm) ist fast
+> #    doppelt so groß wie die größere Streuung, bei M1 gegen M2 ist die
+> #    Differenz (0,024 mm) kleiner als beide Streuungen.
+> #    Der t-Test vergleicht Effekt mit Rauschen – je größer der Effekt im
+> #    Verhältnis zur Streuung, desto eindeutiger das Ergebnis.
+> 
+> # -------------------------------------------------------------
+> # 2. Ungepaarter Vergleich M1 gegen M3 (Welch-t-Test)
+> # -------------------------------------------------------------
+> # H0: M1 und M3 haben denselben Mittelwert (Differenz = 0)
+> # H1: M1 und M3 haben unterschiedliche Mittelwerte (Differenz ≠ 0)
+> vergleich <- daten |> filter(maschine %in% c("M1", "M3"))
+
+> t.test(masse_mm ~ maschine, data = vergleich)
+
+	Welch Two Sample t-test
+
+data:  masse_mm by maschine
+t = -5.1132, df = 55.272, p-value = 4.092e-06
+alternative hypothesis: true difference in means between group M1 and group M3 is not equal to 0
+95 percent confidence interval:
+ -0.08658875 -0.03783017
+sample estimates:
+mean in group M1 mean in group M3 
+        10.00054         10.06275 
+
+
+> # Erwartet laut Lektion: t = -5.1132, df = 55.272, p = 4.092e-06,
+> # 95%-KI der Differenz (M1 - M3): -0.08659 bis -0.03783
+> # In Sätzen: M3 liegt mit 95 % Sicherheit mindestens 0,038 mm und
+> # höchstens 0,087 mm über M1. Das ganze Intervall liegt deutlich
+> # innerhalb der Toleranz von ± 0,15 mm.
+> 
+> # -------------------------------------------------------------
+> # 3. Gepaarter Vergleich über die 10 Chargen
+> # -------------------------------------------------------------
+> chargen <- daten |>
++   group_by(maschine, charge) |>
++   summarise(mm = mean(masse_mm, na.rm = TRUE), .groups = "drop") |>
++   pivot_wider(names_from = maschine, values_from = mm)
+
+> chargen
+# A tibble: 10 × 4
+   charge    M1    M2    M3
+    <dbl> <dbl> <dbl> <dbl>
+ 1    101  9.99  9.95  10.1
+ 2    102 10.00  9.97  10.0
+ 3    103  9.99  9.98  10.1
+ 4    104  9.98  9.98  10.0
+ 5    105  9.99  9.93  10.0
+ 6    106 10    10.0   10.1
+ 7    107 10.0  10.0   10.1
+ 8    108 10.0   9.97  10.1
+ 9    109 10.0   9.97  10.1
+10    110 10.0  10.0   10.1
+
+> differenzen <- chargen$M3 - chargen$M1
+
+> differenzen
+ [1] 0.0625000 0.0375000 0.1308333 0.0275000 0.0375000 0.1100000 0.0450000
+ [8] 0.0475000 0.0750000 0.0600000
+
+> # a) Anzahl positiver / negativer Differenzen
+> sum(differenzen > 0)   # positiv
+[1] 10
+
+> sum(differenzen < 0)   # negativ
+[1] 0
+
+> # b) gepaarter t-Test
+> t.test(chargen$M3, chargen$M1, paired = TRUE)
+
+	Paired t-test
+
+data:  chargen$M3 and chargen$M1
+t = 5.9822, df = 9, p-value = 0.000207
+alternative hypothesis: true mean difference is not equal to 0
+95 percent confidence interval:
+ 0.03938401 0.08728266
+sample estimates:
+mean difference 
+     0.06333333 
+
+
+> # c) 9 Freiheitsgrade: Der gepaarte Test rechnet nicht mit den 37 bzw. 40
+> #    Einzelmessungen, sondern mit den 10 Differenzen der Chargenmittel.
+> #    Bei n = 10 Differenzen sind es n - 1 = 9 Freiheitsgrade.
+> 
+> # d) t-Wert von Hand nachrechnen
+> # über die Differenzen: Mittel der Differenzen / (sd der Differenzen / sqrt(n))
+> t_diff <- mean(differenzen) / (sd(differenzen) / sqrt(length(differenzen)))
+
+> t_diff
+[1] 5.982212
+
+> # über die Messwerte: Mittelwert-Differenz / Standardfehler beider Gruppen
+> m1 <- kennzahlen |> filter(maschine == "M1")
+
+> m3 <- kennzahlen |> filter(maschine == "M3")
+
+> t_mess <- (m3$mittel - m1$mittel) / sqrt(m1$streuung^2 / m1$n + m3$streuung^2 / m3$n)
+
+> t_mess
+[1] 5.113223
+
+> # t über die Differenzen stimmt mit dem gepaarten Test überein.
+> # t über die Messwerte ist der Wert des ungepaarten Welch-Tests (Aufgabe 2).
+> # Lehre: Die gepaarte Formel nimmt die Streuung der Differenzen –
+> # Unterschiede zwischen den Chargen fallen dadurch heraus, das Rauschen
+> # wird kleiner und der t-Wert größer.
+> 
+> # -------------------------------------------------------------
+> # 5. Die Frage hinter der Aufgabe: M1 gegen M2
+> # -------------------------------------------------------------
+> t.test(masse_mm ~ maschine, data = daten |> filter(maschine %in% c("M1", "M2")))
+
+	Welch Two Sample t-test
+
+data:  masse_mm by maschine
+t = 2.8658, df = 71.633, p-value = 0.005456
+alternative hypothesis: true difference in means between group M1 and group M2 is not equal to 0
+95 percent confidence interval:
+ 0.00718776 0.04004717
+sample estimates:
+mean in group M1 mean in group M2 
+       10.000541         9.976923 
+
+
+> # laut Angabe p = 0.005456 -> signifikant, aber nur 0,024 mm Unterschied

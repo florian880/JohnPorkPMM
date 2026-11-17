@@ -5,6 +5,7 @@ Unterlagen und Angaben: [GRG-PMM](https://github.com/georgernstgraf/GRG-PMM)
 
 ## Hausübungen
 
+- 2026-11-17: Selbststudium t-Test (KM7-01 Mittelwertsvergleich) → [2026-11-17_selbststudium_t_test/](./2026-11-17_selbststudium_t_test/)
 - 2026-11-10_rtooling: Betriebsdaten als CSV einlesen und im Excel-Format ins R-Projekt zurückschreiben (writexl) → [2026-11-10_rtooling/](./2026-11-10_rtooling/)
 - vor den Herbstferien: HÜ Verschwörungstheorien → [HÜ-Verschwörungstheorien/](./HÜ-Verschwörungstheorien/)
 - 2026-10-13: ggplots – Demo `year` vs. `body_mass_g` mit `geom_smooth()` nachgebaut und ergänzt → [2026-10-13_ggplots/](./2026-10-13_ggplots/)
