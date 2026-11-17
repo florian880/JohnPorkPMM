@@ -26,7 +26,7 @@
 > 
 > # 1a. Einlesen und Erstblick
 > teile <- read_csv("daten/betriebsdaten.csv")
-indexing betriebsdaten.csv [=============================] 12.59MB/s, eta:  0s                                                                              
+indexing betriebsdaten.csv [==============================] 1.63MB/s, eta:  0s                                                                              
 > glimpse(teile)
 Rows: 120
 Columns: 3
@@ -81,8 +81,12 @@ $ masse_mm <dbl> 10.00, 10.02, 9.92, 10.03, 9.96, 9.92, 9.94, 9.97, 10.03, 1…
 > # -------------------------------------------------------------
 > # Folie: Pinguine – Plot, Kennzahlen, NA-Fehler, t-Test
 > # -------------------------------------------------------------
-> ggplot(penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
+> p_pinguine <- ggplot(penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
 +   geom_point()
+
+> p_pinguine
+
+> ggsave("pinguine_flosse_masse.png", p_pinguine, width = 7, height = 5)
 
 > # 342 Punkte: zwei Pinguine haben keine Massung (Warnung "Removed 2 rows")
 > 

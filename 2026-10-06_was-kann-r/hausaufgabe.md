@@ -14,7 +14,7 @@ Angabe: [GRG-PMM/unterricht/SA-00-was-kann-r/aufgabe.md](https://github.com/geor
 | `pinguine_flosse_masse.png` | Diagramm von der Folie: Flossenlänge vs. Körpermasse (vom Skript gespeichert) |
 | `daten/betriebsdaten.csv` | Betriebsdaten (aus `assets/`) |
 | `konsolenausgabe.txt` | vollständige RStudio-Konsolenausgabe eines Durchlaufs (17.11.2026, ohne Fehler) |
-| `eingaben_konsole.Rhistory` | die Befehle, die ich in der Console eingegeben habe (Beleg für den Testlauf) |
+| `eingaben_konsole.Rhistory` | die Befehle, die ich in der Console eingegeben habe (Beleg für den Testlauf; 2 Durchläufe – der zweite nach Ergänzung von `ggsave()` für das Diagramm) |
 
 ## Beispiel 1 – Antworten
 
