@@ -11,6 +11,7 @@ Angabe: [GRG-PMM/unterricht/SA-00-was-kann-r/aufgabe.md](https://github.com/geor
 |---|---|
 | `pmm-sa-00.Rproj` | RStudio-Projekt |
 | `analyse.R` | alle Folienübungen (2 + 2, `<-`, `glimpse`, `group_by`/`summarise`, NA-Fehler, `t.test`) + Beispiele 1 und 3 mit Antworten als Kommentare |
+| `pinguine_flosse_masse.png` | Diagramm von der Folie: Flossenlänge vs. Körpermasse (vom Skript gespeichert) |
 | `daten/betriebsdaten.csv` | Betriebsdaten (aus `assets/`) |
 | `konsolenausgabe.txt` | vollständige RStudio-Konsolenausgabe eines Durchlaufs (17.11.2026, ohne Fehler) |
 | `eingaben_konsole.Rhistory` | die Befehle, die ich in der Console eingegeben habe (Beleg für den Testlauf) |

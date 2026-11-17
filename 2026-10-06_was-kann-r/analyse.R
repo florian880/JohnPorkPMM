@@ -50,8 +50,10 @@ teile |> filter(abs(masse_mm - 10) > 0.15)
 # -------------------------------------------------------------
 # Folie: Pinguine – Plot, Kennzahlen, NA-Fehler, t-Test
 # -------------------------------------------------------------
-ggplot(penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
+p_pinguine <- ggplot(penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
   geom_point()
+p_pinguine
+ggsave("pinguine_flosse_masse.png", p_pinguine, width = 7, height = 5)
 # 342 Punkte: zwei Pinguine haben keine Massung (Warnung "Removed 2 rows")
 
 penguins |>
