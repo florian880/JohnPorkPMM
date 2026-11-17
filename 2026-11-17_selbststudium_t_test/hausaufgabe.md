@@ -13,7 +13,7 @@ Lektüre: Navarro, *Learning Statistics with R*, Kap. 13 (t-Tests)
 | `analyse.R` | gesamter Code der Aufgabe, Antworten als Kommentare |
 | `daten/betriebsdaten.csv` | Betriebsdaten (aus `assets/`) |
 | `konsolenausgabe.txt` | vollständige RStudio-Konsolenausgabe eines Durchlaufs |
-| `eingaben_konsole.Rhistory` | die Befehle, die ich in der Console eingegeben habe |
+| `eingaben_konsole.Rhistory` | die Befehle, die ich in der Console eingegeben habe (2 Durchläufe – beim ersten wurde `source()` versehentlich doppelt abgeschickt, die Konsolenausgabe stammt vom sauberen zweiten Lauf) |
 
 ## 1. Vorhersagen
 
