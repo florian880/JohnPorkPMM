@@ -6,7 +6,7 @@ Name: Florian Benes &nbsp;&nbsp;&nbsp; Abgabe: _____________
 und [Kap. 2 Workflow: basics](https://r4ds.hadley.nz/workflow-basics.html) —
 lies sie zuerst, die Aufgaben bauen darauf auf.
 
-**Skript:** Der gesamte Code dieser Hausaufgabe steht in [`sa01_ggplot.R`](sa01_ggplot.R) (läuft von oben nach unten durch, Source-Button).
+**Skript:** Der gesamte Code dieser Hausaufgabe steht in [`sa01_ggplot.R`](sa01_ggplot.R) (läuft von oben nach unten durch, Source-Button). Belege für den Testlauf: `konsolenausgabe.txt` (Ausgabe), `eingaben_konsole.Rhistory` (meine Eingaben), `sa01_zielplot.png` und `sa01_eigene_frage.png` (vom Skript gespeicherte Plots).
 
 ---
 

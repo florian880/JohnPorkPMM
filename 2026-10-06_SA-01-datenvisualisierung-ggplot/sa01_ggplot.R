@@ -13,6 +13,9 @@ library(palmerpenguins)   # liefert penguins mit body_mass_g usw.
 glimpse(penguins)
 # -> 344 Zeilen, 8 Spalten
 # -> species: factor, body_mass_g: integer
+# Hinweis: 2 Pinguine haben keine Körpermasse/Flossenlänge (NA).
+# Die Plots unten zeigen sie nicht an -> Warnung "Removed 2 rows" ist
+# erwartet und kein Fehler (genau diese 2 Zeilen fehlen).
 
 # -------------------------------------------------------------
 # 2. Die Einstiegsfrage nachbauen (Ziel-Plot)
