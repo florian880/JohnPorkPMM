@@ -14,6 +14,15 @@ p_demo <- ggplot(penguins,
   geom_smooth() +
   labs(x = "Geburtsjahr (J)", y = "Körpermasse (g)")
 p_demo
+# Hinweis: Die Demo nutzt geom_smooth() mit loess (Standard). year hat nur
+# 3 verschiedene Werte -> loess meldet Warnungen (zu wenige x-Werte zum
+# Glätten). Die Demo bleibt trotzdem original, wie in der Stunde.
+# Außerdem: 2 Pinguine ohne Körpermasse -> "Removed 2 rows".
+
+# Für die Ergänzungen: Pinguine ohne Körpermasse vorher entfernen,
+# damit keine "Removed 2 rows"-Warnungen mehr kommen
+pinguine <- subset(penguins, !is.na(body_mass_g))
+nrow(pinguine)   # 342 statt 344
 
 # -------------------------------------------------------------
 # 2. Ergänzung: Rohdaten sichtbar machen
@@ -21,10 +30,10 @@ p_demo
 #    year hat nur 3 Werte (2007, 2008, 2009) -> geom_jitter verteilt
 #    die Punkte leicht, damit sie sich nicht überdecken.
 # -------------------------------------------------------------
-p_punkte <- ggplot(penguins,
+p_punkte <- ggplot(pinguine,
                    aes(x = year, y = body_mass_g)) +
   geom_jitter(width = 0.15, alpha = 0.4) +
-  geom_smooth() +
+  geom_smooth(method = "lm", formula = y ~ x) +   # gerade Linie statt loess
   scale_x_continuous(breaks = c(2007, 2008, 2009)) +
   labs(x = "Geburtsjahr (J)", y = "Körpermasse (g)",
        title = "Körpermasse nach Jahr – mit Einzelwerten")
@@ -36,10 +45,10 @@ p_punkte
 #    eine gemeinsame Linie mischt das zusammen.
 #    method = "lm": gerade Trendlinie, passt bei nur 3 x-Werten besser
 # -------------------------------------------------------------
-p_arten <- ggplot(penguins,
+p_arten <- ggplot(pinguine,
                   aes(x = year, y = body_mass_g, color = species)) +
   geom_jitter(width = 0.15, alpha = 0.4) +
-  geom_smooth(method = "lm", se = TRUE) +
+  geom_smooth(method = "lm", formula = y ~ x, se = TRUE) +
   scale_x_continuous(breaks = c(2007, 2008, 2009)) +
   labs(x = "Geburtsjahr (J)", y = "Körpermasse (g)", color = "Art",
        title = "Körpermasse nach Jahr und Art")
@@ -48,7 +57,7 @@ p_arten
 # -------------------------------------------------------------
 # 4. Ergänzung: Boxplot je Jahr und Art (facet_wrap)
 # -------------------------------------------------------------
-p_box <- ggplot(penguins,
+p_box <- ggplot(pinguine,
                 aes(x = factor(year), y = body_mass_g, fill = species)) +
   geom_boxplot() +
   facet_wrap(~ species) +
@@ -66,7 +75,9 @@ ggsave("ergaenzung_boxplot.png",  p_box,    width = 9, height = 5)
 # Interpretation
 # -------------------------------------------------------------
 # Über die drei Jahre 2007–2009 bleibt die Körpermasse ziemlich konstant –
-# es gibt keinen klaren Trend. Die Unterschiede zwischen den Arten
-# (Gentoo deutlich schwerer) sind viel größer als die Unterschiede
-# zwischen den Jahren. Mit nur 3 Jahren kann man ohnehin keinen
+# es gibt keinen klaren Trend. Die loess-Kurve der Demo schwankt nur um ca.
+# 4100–4270 g, und ihr Unsicherheitsband ist so breit, dass das kein echter
+# Unterschied ist. Die Unterschiede zwischen den Arten sind viel größer:
+# Gentoo liegt im Median bei ca. 5000 g, Adelie und Chinstrap bei ca. 3700 g –
+# in jedem Jahr gleich. Mit nur 3 Jahren kann man ohnehin keinen
 # langfristigen Trend ableiten.
